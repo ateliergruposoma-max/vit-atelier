@@ -1,15 +1,15 @@
 // @ts-ignore
-import logoImg from './assets/logo.png'; 
+import logoImg from './assets/logo.png';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { 
-  Search, Download, Play, Database, X, CheckCircle2, 
-  Circle, Calendar, CheckSquare, Square, 
+import {
+  Search, Download, Play, Database, X, CheckCircle2,
+  Circle, Calendar, CheckSquare, Square,
   Link as LinkIcon, Check, RefreshCw, AlertCircle, ExternalLink,
-  LayoutGrid, List 
+  LayoutGrid, List
 } from 'lucide-react';
 
 // === CONFIGURAÇÃO MANUAL ===
-const DRIVE_FOLDER_ID = '1lVuYpQgI5Ledq9q3Hnv555Fhw46SiY0T'; 
+const DRIVE_FOLDER_ID = '1lVuYpQgI5Ledq9q3Hnv555Fhw46SiY0T';
 
 interface DriveVideo {
   id: string;
@@ -28,7 +28,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('asc'); 
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('asc');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeVideo, setActiveVideo] = useState<DriveVideo | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -56,12 +56,12 @@ const App: React.FC = () => {
       let allFiles: any[] = [];
       let nextPageToken = "";
       const q = `'${DRIVE_FOLDER_ID}' in parents and mimeType contains 'video/' and trashed = false`;
-      
+
       do {
         const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=nextPageToken,files(id,name,thumbnailLink,size,createdTime,webContentLink)&pageSize=1000&key=${apiKey}${nextPageToken ? `&pageToken=${nextPageToken}` : ''}`;
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (data.files) {
           allFiles = [...allFiles, ...data.files];
         }
@@ -133,7 +133,7 @@ const App: React.FC = () => {
 
   const filteredVideos = useMemo(() => {
     let result = videos.filter(v => v.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     result.sort((a, b) => {
       const comparison = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
       return sortOrder === 'desc' ? -comparison : comparison;
@@ -148,17 +148,17 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans selection:bg-blue-100">
       <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
         <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-6">
-          
+
           {/* SEÇÃO DA LOGO E TÍTULO */}
           <div className="flex items-center gap-8 shrink-0">
             <div className="h-12 flex items-center shrink-0">
-              <img 
-                src={logoImg} 
-                alt="Logo Azzas" 
-                className="h-full w-auto object-contain" 
+              <img
+                src={logoImg}
+                alt="Logo Azzas"
+                className="h-full w-auto object-contain"
               />
             </div>
-            <h1 className="text-xl font-black tracking-tight text-blue-900 ">
+            <h1 className="text-xl font-normal tracking-tight text-blue-900 ">
               Portal de Operações - Vit's Atelier
             </h1>
           </div>
@@ -167,7 +167,7 @@ const App: React.FC = () => {
           <div className="flex-1 w-full max-w-2xl flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input 
+              <input
                 type="text"
                 placeholder="Pesquisar operações..."
                 className="w-full bg-slate-100 border-none rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all font-medium"
@@ -175,15 +175,19 @@ const App: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            
+
             <div className="flex items-center gap-2">
               {selectedIds.size > 0 && (
-                <button 
+                <button
                   onClick={handleBulkDownload}
                   disabled={isBulkDownloading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-sm font-bold shadow-xl shadow-blue-500/25 transition-all"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-sm font-bold shadow-xl shadow-blue-500/25 transition-all whitespace-nowrap"
                 >
-                  {isBulkDownloading ? <><RefreshCw className="w-4 h-4 animate-spin" /> ...</> : <><Download className="w-4 h-4" /> ({selectedIds.size})</>}
+                  {isBulkDownloading ? (
+                    <><RefreshCw className="w-4 h-4 animate-spin" /> Processando...</>
+                  ) : (
+                    <><Download className="w-4 h-4" /> Baixar ({selectedIds.size})</>
+                  )}
                 </button>
               )}
               <button onClick={fetchVideos} className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
@@ -198,7 +202,7 @@ const App: React.FC = () => {
       <main className="max-w-[1600px] mx-auto px-6 py-8">
         <div className="mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => {
                 if (selectedIds.size === filteredVideos.length) setSelectedIds(new Set());
                 else setSelectedIds(new Set(filteredVideos.map(v => v.id)));
@@ -216,13 +220,13 @@ const App: React.FC = () => {
 
           <div className="flex items-center gap-6">
             <div className="flex items-center bg-slate-100 p-1 rounded-xl">
-              <button 
+              <button
                 onClick={() => setViewMode('grid')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 <LayoutGrid className="w-4 h-4" />
               </button>
-              <button 
+              <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
@@ -230,11 +234,10 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            {/* ABAIXO A ALTERAÇÃO DO DROPDOWN HARMONIOSO */}
             <div className="flex items-center border-l border-slate-200 pl-6">
               <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 hover:bg-white hover:border-blue-300 transition-all group">
                 <Calendar className="w-4 h-4 text-slate-400 mr-2 group-hover:text-blue-500 transition-colors" />
-                <select 
+                <select
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value as any)}
                   className="bg-transparent text-xs font-bold text-slate-600 cursor-pointer outline-none appearance-none pr-4"
@@ -263,8 +266,8 @@ const App: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className={viewMode === 'grid' 
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6" 
+          <div className={viewMode === 'grid'
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6"
             : "flex flex-col gap-3"
           }>
             {filteredVideos.map((video) => {
@@ -275,7 +278,7 @@ const App: React.FC = () => {
               if (viewMode === 'list') {
                 return (
                   <div key={video.id} className={`flex items-center gap-4 bg-white p-3 rounded-2xl border-2 transition-all ${isSel ? 'border-blue-500 bg-blue-50/30' : 'border-transparent shadow-sm hover:border-blue-100'}`}>
-                    <button 
+                    <button
                       onClick={() => {
                         const next = new Set(selectedIds);
                         next.has(video.id) ? next.delete(video.id) : next.add(video.id);
@@ -285,7 +288,7 @@ const App: React.FC = () => {
                     >
                       {isSel ? <CheckCircle2 className="w-6 h-6 text-blue-600 fill-white" /> : <Circle className="w-6 h-6 text-slate-200" />}
                     </button>
-                    
+
                     <div className="relative w-32 aspect-video rounded-xl overflow-hidden bg-slate-100 shrink-0">
                       <img src={video.thumbnail} className="w-full h-full object-cover" />
                       <div className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/10 hover:bg-black/20 transition-colors" onClick={() => setActiveVideo(video)}>
@@ -302,7 +305,7 @@ const App: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <button 
+                      <button
                         onClick={() => handleDownload(video)}
                         disabled={isDownloading}
                         className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${isDownloading ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
@@ -310,7 +313,7 @@ const App: React.FC = () => {
                         {isDownloading ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
                         {isDownloading ? '...' : 'Baixar'}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleCopyLink(video.id)}
                         className={`p-2.5 rounded-xl border-2 transition-all ${isCopied ? 'bg-green-50 border-green-200 text-green-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-blue-600'}`}
                       >
@@ -328,7 +331,7 @@ const App: React.FC = () => {
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer" onClick={() => setActiveVideo(video)}>
                       <Play className="w-12 h-12 text-white fill-white opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all duration-300 pointer-events-none" />
                     </div>
-                    <button 
+                    <button
                       onClick={() => {
                         const next = new Set(selectedIds);
                         next.has(video.id) ? next.delete(video.id) : next.add(video.id);
@@ -348,14 +351,14 @@ const App: React.FC = () => {
                     </div>
 
                     <div className="flex gap-2">
-                      <button 
+                      <button
                         onClick={() => handleDownload(video)}
                         disabled={isDownloading}
                         className={`flex-1 ${isDownloading ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700'} text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all`}
                       >
                         {isDownloading ? <><RefreshCw className="w-3.5 h-3.5 animate-spin pointer-events-none" /> Carregando</> : <><Download className="w-3.5 h-3.5 pointer-events-none" /> Baixar</>}
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleCopyLink(video.id)}
                         className={`w-11 h-10 flex items-center justify-center rounded-xl border-2 transition-all ${isCopied ? 'bg-green-50 border-green-200 text-green-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-blue-600'}`}
                       >
