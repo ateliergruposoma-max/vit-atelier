@@ -51,11 +51,22 @@ const App: React.FC = () => {
     }
     setLoading(true);
     try {
+      let allFiles: any[] = [];
+      let nextPageToken = "";
       const q = `'${DRIVE_FOLDER_ID}' in parents and mimeType contains 'video/' and trashed = false`;
-      const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name,thumbnailLink,size,createdTime,webContentLink)&key=${apiKey}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      const mapped = (data.files || []).map((file: any) => ({
+      
+      do {
+        const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=nextPageToken,files(id,name,thumbnailLink,size,createdTime,webContentLink)&pageSize=1000&key=${apiKey}${nextPageToken ? `&pageToken=${nextPageToken}` : ''}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.files) {
+          allFiles = [...allFiles, ...data.files];
+        }
+        nextPageToken = data.nextPageToken || "";
+      } while (nextPageToken);
+
+      const mapped = allFiles.map((file: any) => ({
         id: file.id,
         name: file.name,
         thumbnail: `https://drive.google.com/thumbnail?id=${file.id}&sz=w640`,
@@ -66,6 +77,7 @@ const App: React.FC = () => {
         webContentLink: file.webContentLink,
       }));
       setVideos(mapped);
+      setError(null);
     } catch (err) {
       setError("Erro ao carregar vídeos.");
     } finally {
