@@ -158,7 +158,7 @@ const App: React.FC = () => {
                 className="h-full w-auto object-contain" 
               />
             </div>
-            <h1 className="text-xl font-black tracking-tight text-blue-950 uppercase">
+            <h1 className="text-xl font-black tracking-tight text-blue-900 ">
               Portal de Operações - Vit's Atelier
             </h1>
           </div>
