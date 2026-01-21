@@ -1,0 +1,9 @@
+
+{
+  "name": "VIT's Atelier",
+  "description": "Portal de vídeos exclusivo para o VIT's Atelier, facilitando a busca e o download de conteúdos de costura e modelagem.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
