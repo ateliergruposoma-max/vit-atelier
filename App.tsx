@@ -230,16 +230,24 @@ const App: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 border-l border-slate-200 pl-6">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <select 
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value as any)}
-                className="bg-transparent text-sm font-bold text-slate-600 cursor-pointer outline-none"
-              >
-                <option value="asc">Ordem Crescente</option>
-                <option value="desc">Ordem Decrescente</option>
-              </select>
+            {/* ABAIXO A ALTERAÇÃO DO DROPDOWN HARMONIOSO */}
+            <div className="flex items-center border-l border-slate-200 pl-6">
+              <div className="relative flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 hover:bg-white hover:border-blue-300 transition-all group">
+                <Calendar className="w-4 h-4 text-slate-400 mr-2 group-hover:text-blue-500 transition-colors" />
+                <select 
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value as any)}
+                  className="bg-transparent text-xs font-bold text-slate-600 cursor-pointer outline-none appearance-none pr-4"
+                >
+                  <option value="asc">Ordem Crescente</option>
+                  <option value="desc">Ordem Decrescente</option>
+                </select>
+                <div className="absolute right-2 pointer-events-none text-slate-400">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
