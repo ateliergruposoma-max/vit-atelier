@@ -150,8 +150,8 @@ const App: React.FC = () => {
         <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center gap-6">
           <div className="flex items-center gap-3 shrink-0">
             {/* LINHA ALTERADA: Usando o logoImg importado corretamente */}
-            <div className="w-10 h-10 shrink-0 shadow-lg shadow-blue-500/20">
-              <img src={logoImg} alt="Logo Vit's" className="w-full h-full rounded-xl object-cover" />
+            <div className="w-16 h-16 shrink-0 shadow-lg shadow-blue-500/20">
+              <img src={logoImg} alt="Logo Vit's" className="w-full h-full rounded-xl object-contain" />
             </div>
             <h1 className="text-xl font-black tracking-tighter text-blue-900 uppercase">VIT'S OPERAÇÕES</h1>
           </div>
