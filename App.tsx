@@ -159,7 +159,7 @@ const App: React.FC = () => {
               />
             </div>
             <h1 className="text-xl font-black tracking-tighter text-black-900 uppercase">
-              VIT'S OPERAÇÕES
+              Portal de Operações - Vit's Atelier
             </h1>
           </div>
 
