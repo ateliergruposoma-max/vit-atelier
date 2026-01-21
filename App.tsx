@@ -1,3 +1,4 @@
+import logoImg from './assets/logo.png'; // Importação da sua imagem
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
   Search, Download, Play, Database, X, CheckCircle2, 
@@ -26,7 +27,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('asc'); // Alterado para padrão inicial 'asc'
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('asc'); 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeVideo, setActiveVideo] = useState<DriveVideo | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -147,8 +148,9 @@ const App: React.FC = () => {
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center gap-6">
           <div className="flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <Database className="text-white w-5 h-5 pointer-events-none" />
+            {/* LINHA ALTERADA: Substituição do ícone pela sua imagem */}
+            <div className="w-10 h-10 shrink-0 shadow-lg shadow-blue-500/20">
+              <img src={logoImg} alt="Logo" className="w-full h-full rounded-xl object-cover" />
             </div>
             <h1 className="text-xl font-black tracking-tighter text-blue-900 uppercase">VIT'S OPERAÇÕES</h1>
           </div>
