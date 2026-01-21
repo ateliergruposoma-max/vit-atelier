@@ -1,5 +1,5 @@
 // @ts-ignore
-import logoImg from './assets/logo.png'; // O comentário acima remove o erro vermelho
+import logoImg from './assets/logo.png'; 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
   Search, Download, Play, Database, X, CheckCircle2, 
@@ -146,41 +146,52 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] font-sans selection:bg-blue-100">
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200">
-        <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center gap-6">
-          <div className="flex items-center gap-3 shrink-0">
-            {/* LINHA ALTERADA: Usando o logoImg importado corretamente */}
-            <div className="w-16 h-16 shrink-0 shadow-lg shadow-blue-500/20">
-              <img src={logoImg} alt="Logo Vit's" className="w-full h-full rounded-xl object-contain" />
+      <header className="sticky top-0 z-40 bg-white border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          {/* SEÇÃO DA LOGO E TÍTULO */}
+          <div className="flex items-center gap-8 shrink-0">
+            <div className="h-12 flex items-center shrink-0">
+              <img 
+                src={logoImg} 
+                alt="Logo Azzas" 
+                className="h-full w-auto object-contain" 
+              />
             </div>
-            <h1 className="text-xl font-black tracking-tighter text-blue-900 uppercase">VIT'S OPERAÇÕES</h1>
+            <h1 className="text-xl font-black tracking-tighter text-blue-900 uppercase">
+              VIT'S OPERAÇÕES
+            </h1>
           </div>
 
-          <div className="flex-1 w-full max-w-2xl relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input 
-              type="text"
-              placeholder="Pesquisar operações..."
-              className="w-full bg-slate-100 border-none rounded-2xl py-3.5 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all font-medium"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            {selectedIds.size > 0 && (
-              <button 
-                onClick={handleBulkDownload}
-                disabled={isBulkDownloading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-sm font-bold shadow-xl shadow-blue-500/25 transition-all"
-              >
-                {isBulkDownloading ? <><RefreshCw className="w-4 h-4 animate-spin" /> Processando...</> : <><Download className="w-4 h-4" /> Baixar ({selectedIds.size})</>}
+          {/* SEÇÃO DE BUSCA E REFRESH */}
+          <div className="flex-1 w-full max-w-2xl flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input 
+                type="text"
+                placeholder="Pesquisar operações..."
+                className="w-full bg-slate-100 border-none rounded-2xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all font-medium"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <div className="flex items-center gap-2">
+              {selectedIds.size > 0 && (
+                <button 
+                  onClick={handleBulkDownload}
+                  disabled={isBulkDownloading}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white px-6 py-3 rounded-2xl flex items-center gap-2 text-sm font-bold shadow-xl shadow-blue-500/25 transition-all"
+                >
+                  {isBulkDownloading ? <><RefreshCw className="w-4 h-4 animate-spin" /> ...</> : <><Download className="w-4 h-4" /> ({selectedIds.size})</>}
+                </button>
+              )}
+              <button onClick={fetchVideos} className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
+                <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
               </button>
-            )}
-            <button onClick={fetchVideos} className="p-3 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all">
-              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
-            </button>
+            </div>
           </div>
+
         </div>
       </header>
 
