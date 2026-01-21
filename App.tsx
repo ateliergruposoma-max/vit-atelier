@@ -3,7 +3,7 @@ import {
   Search, Download, Play, Database, X, CheckCircle2, 
   Circle, Calendar, CheckSquare, Square, 
   Link as LinkIcon, Check, RefreshCw, AlertCircle, ExternalLink,
-  LayoutGrid, List // Novos ícones para o alternador
+  LayoutGrid, List 
 } from 'lucide-react';
 
 // === CONFIGURAÇÃO MANUAL ===
@@ -26,8 +26,8 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid'); // NOVO ESTADO
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc'); // Alterado para desc/asc
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeVideo, setActiveVideo] = useState<DriveVideo | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -129,9 +129,15 @@ const App: React.FC = () => {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  // Lógica de ordenação por nome numérico (Ex: 10, 9, 8...)
   const filteredVideos = useMemo(() => {
     let result = videos.filter(v => v.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    result.sort((a, b) => sortOrder === 'newest' ? b.timestamp - a.timestamp : a.timestamp - b.timestamp);
+    
+    result.sort((a, b) => {
+      const comparison = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+      return sortOrder === 'desc' ? -comparison : comparison;
+    });
+
     return result;
   }, [videos, searchQuery, sortOrder]);
 
@@ -196,7 +202,6 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            {/* NOVO ALTERNADOR DE GRADE/LISTA */}
             <div className="flex items-center bg-slate-100 p-1 rounded-xl">
               <button 
                 onClick={() => setViewMode('grid')}
@@ -219,8 +224,8 @@ const App: React.FC = () => {
                 onChange={(e) => setSortOrder(e.target.value as any)}
                 className="bg-transparent text-sm font-bold text-slate-600 cursor-pointer outline-none"
               >
-                <option value="newest">Mais Recentes</option>
-                <option value="oldest">Mais Antigos</option>
+                <option value="desc">Ordem Decrescente</option>
+                <option value="asc">Ordem Crescente</option>
               </select>
             </div>
           </div>
@@ -297,7 +302,6 @@ const App: React.FC = () => {
                 );
               }
 
-              // RENDERIZAÇÃO EM GRADE (CARDS)
               return (
                 <div key={video.id} className={`group bg-white p-3 rounded-3xl border-2 transition-all duration-300 ${isSel ? 'border-blue-500 bg-blue-50/30' : 'border-transparent shadow-sm hover:border-blue-100'}`}>
                   <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-100">
