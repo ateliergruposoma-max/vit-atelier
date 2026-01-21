@@ -1,4 +1,3 @@
-import logoImg from './assets/logo.png'; // Importação da sua imagem
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
   Search, Download, Play, Database, X, CheckCircle2, 
@@ -148,9 +147,9 @@ const App: React.FC = () => {
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200">
         <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row items-center gap-6">
           <div className="flex items-center gap-3 shrink-0">
-            {/* LINHA ALTERADA: Substituição do ícone pela sua imagem */}
+            {/* LINHA ALTERADA: Agora pegando da pasta public sem precisar de import */}
             <div className="w-10 h-10 shrink-0 shadow-lg shadow-blue-500/20">
-              <img src={logoImg} alt="Logo" className="w-full h-full rounded-xl object-cover" />
+              <img src="/logo.png" alt="Logo" className="w-full h-full rounded-xl object-cover" />
             </div>
             <h1 className="text-xl font-black tracking-tighter text-blue-900 uppercase">VIT'S OPERAÇÕES</h1>
           </div>
