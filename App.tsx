@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc'); // Alterado para desc/asc
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('asc'); // Alterado para padrão inicial 'asc'
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeVideo, setActiveVideo] = useState<DriveVideo | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -129,7 +129,6 @@ const App: React.FC = () => {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  // Lógica de ordenação por nome numérico (Ex: 10, 9, 8...)
   const filteredVideos = useMemo(() => {
     let result = videos.filter(v => v.name.toLowerCase().includes(searchQuery.toLowerCase()));
     
@@ -224,8 +223,8 @@ const App: React.FC = () => {
                 onChange={(e) => setSortOrder(e.target.value as any)}
                 className="bg-transparent text-sm font-bold text-slate-600 cursor-pointer outline-none"
               >
-                <option value="desc">Ordem Decrescente</option>
                 <option value="asc">Ordem Crescente</option>
+                <option value="desc">Ordem Decrescente</option>
               </select>
             </div>
           </div>
@@ -250,7 +249,6 @@ const App: React.FC = () => {
               const isSel = selectedIds.has(video.id);
               const isCopied = copiedId === video.id;
               const isDownloading = downloadingId === video.id;
-              const isLarge = video.rawSize > 100 * 1024 * 1024;
 
               if (viewMode === 'list') {
                 return (
@@ -278,7 +276,6 @@ const App: React.FC = () => {
                       <div className="flex items-center gap-4 mt-1">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{video.size}</span>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{video.date}</span>
-                        {isLarge && <span className="bg-amber-100 text-amber-600 text-[9px] font-black px-1.5 py-0.5 rounded">GRANDE</span>}
                       </div>
                     </div>
 
@@ -307,64 +304,4 @@ const App: React.FC = () => {
                   <div className="relative aspect-video rounded-2xl overflow-hidden mb-4 bg-slate-100">
                     <img src={video.thumbnail} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center cursor-pointer" onClick={() => setActiveVideo(video)}>
-                      <Play className="w-12 h-12 text-white fill-white opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all duration-300 pointer-events-none" />
-                    </div>
-                    <button 
-                      onClick={() => {
-                        const next = new Set(selectedIds);
-                        next.has(video.id) ? next.delete(video.id) : next.add(video.id);
-                        setSelectedIds(next);
-                      }}
-                      className="absolute top-3 left-3"
-                    >
-                      {isSel ? <CheckCircle2 className="w-7 h-7 text-blue-600 fill-white pointer-events-none" /> : <Circle className="w-7 h-7 text-white/80 pointer-events-none" />}
-                    </button>
-                    {isLarge && <div className="absolute top-2 right-2 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-lg">GRANDE</div>}
-                  </div>
-
-                  <div className="px-1">
-                    <h3 className="font-bold text-sm text-slate-800 line-clamp-2 mb-2 min-h-[40px] leading-tight">{video.name}</h3>
-                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-4">
-                      <span>{video.size}</span>
-                      <span>{video.date}</span>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => handleDownload(video)}
-                        disabled={isDownloading}
-                        className={`flex-1 ${isDownloading ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700'} text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all`}
-                      >
-                        {isDownloading ? <><RefreshCw className="w-3.5 h-3.5 animate-spin pointer-events-none" /> Carregando</> : <><Download className="w-3.5 h-3.5 pointer-events-none" /> {isLarge ? 'Baixar*' : 'Baixar'}</>}
-                      </button>
-                      <button 
-                        onClick={() => handleCopyLink(video.id)}
-                        className={`w-11 h-10 flex items-center justify-center rounded-xl border-2 transition-all ${isCopied ? 'bg-green-50 border-green-200 text-green-600' : 'bg-slate-50 border-slate-200 text-slate-400 hover:text-blue-600'}`}
-                      >
-                        {isCopied ? <Check className="w-4 h-4 pointer-events-none" /> : <LinkIcon className="w-4 h-4 pointer-events-none" />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </main>
-
-      {activeVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="absolute inset-0" onClick={() => setActiveVideo(null)} />
-          <div className="relative w-full max-w-4xl bg-white rounded-[40px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="aspect-video bg-black relative">
-              <button onClick={() => setActiveVideo(null)} className="absolute top-4 right-4 z-10 p-2 bg-black/60 rounded-full text-white hover:bg-black/80"><X className="w-5 h-5" /></button>
-              <iframe src={`https://drive.google.com/file/d/${activeVideo.id}/preview`} className="w-full h-full border-0" allow="autoplay; fullscreen" allowFullScreen />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default App;
+                      <Play className="w-12 h-12 text-white fill-white opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all
